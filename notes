@@ -1,0 +1,3 @@
+"The brighter–fatter effect (Guyonnet et al., 2015; Jarvis et al., 2021; Antilogus et al., 2014) is a nonlinear effect where a bright point source appears to have a larger size (FWHM) compared to that of a fainter point source. In optical CCDs, it is caused by accumulated charge in a pixel that changes the electric field’s geometry: pixels receiving high flux repel new incoming electrons arriving later, causing them to fall into outer pixels. This effect is neither well-studied nor quantified in near-infrared array detectors, but it is still evident, albeit less severe (Hirata & Choi, 2020). This causes the core PSF width for bright stars to appear larger." (Miller et al., 2024 (https://arxiv.org/abs/2410.14186v1))
+
+

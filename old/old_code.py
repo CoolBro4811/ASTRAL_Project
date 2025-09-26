@@ -34,7 +34,7 @@ def load_fits_image(fn: str):
 
 def open_fits_file(fn: str):
     data = load_fits_image(fn)
-    blur = [0.1, 0.5, 1, 2]
+    blur = [0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 5, 10, 50]
     stars = []
     images = []
     for s in blur:

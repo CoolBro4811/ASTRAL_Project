@@ -1,0 +1,131 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{hyperref}
+%\usepackage{graphix}
+
+%\includegraphics[width=\textwidth]{image}
+
+% OR
+
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=\textwidth]{image}
+%\caption{Caption the image}
+%\end{figure}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+
+\hyphenpenalty=10000
+
+
+
+
+\title{ASTRAL Lick Project}
+\author{Colin Lambert}
+\date{Last Updated: 2025-\usepackage{hyperref}09-25 23:07}
+
+\begin{document}
+
+\maketitle
+
+\url{https://en.wikipedia.org/wiki/Point_spread_function}
+
+Treat image as 2d function:
+
+\begin{equation}
+    
+    \label{eq:image}
+    I(x,y) \in \mathbb{R}, (x,y) \in {0,...,W-1} \times {0,...,H-1}
+\end{equation}
+Where $ I(x,y) $ is pixel brightness
+
+
+We can model stars as a point spread function (as a 2d gaussian):
+
+\begin{equation}
+    
+    \label{eq:psf}
+    S(x,y) = A\cdot exp(-\frac{(x-x_0)^2+(y-y_0)^2}{2\sigma^2})
+\end{equation}
+
+
+We can assume that:
+\begin{equation}
+    
+    \label{eq:total}
+    I(x,y) = \sum_i{S_i(x,y) + B(x,y) + N(x,y)}
+\end{equation}
+
+Where $S_i$ is each star, $B(x,y)$ is background, like skyglow or light pollution, and $N(x,y)$ is the noise.
+
+
+
+We can estimate the backgroun by using:
+\[ 
+I\prime(x,y) = I(x,y) - B(x,y)
+\]
+
+Then thresholding, by marking pixels where 
+\[
+I\prime(x,y) > T
+\]
+where $T$ is chosen as $k\cdot\sigma$, with $\sigma$ the estimated stddev of the background noise. 
+
+Run connected components to find star shapes, and fit a gaussian to each blob in order to estimate subpixel centroid and brightness
+
+
+
+may need to invert images?
+i have noticed some of the fits are inverted so we can just do img  = -img befor eprocessing if needed - COULD POTENTIALLY put this into the code? maybe ask ethan
+
+``` 
+p_lo = np.percentile(img_sub, 0.5)
+p_hi = np.percentile(img_sub, 99.5)
+print("low tail 0.5%:", p_lo, "high tail 99.5%:", p_hi)
+
+
+probably find best numbers to fit - could test with multpile and gauge accuracy - TOUGH, but might work? - might need other people to help?
+
+\url{https://en.wikipedia.org/wiki/Matched_filter}
+```
+
+currently just like taking the mad stddev but idk????
+Median Absolute Deviation
+\url{https://en.wikipedia.org/wiki/Median_absolute_deviation}
+
+
+
+Instrument artifacts
+how can we get rid of these?
+just like ignore columns/rows cause ive seen alot of that??
+
+
+project outline:
+
+src/io.py — FITS loading and NaN handling
+
+src/background.py — blockwise median background
+
+src/utils.py — MAD sigma estimator and convolution helper
+
+src/detect.py — full pipeline (thresholding logic, invert option)
+
+src/visual.py — plotting with circles (what was shown)
+
+scripts/run\_detect.py — CLI usage (how runs were executed)
+
+
+
+
+\end{document}
