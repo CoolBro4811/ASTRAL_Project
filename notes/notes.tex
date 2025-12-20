@@ -39,7 +39,7 @@
 
 \maketitle
 
-\url{https://en.wikipedia.org/wiki/Point_spread_function}
+https://en.wikipedia.org/wiki/Point\_spread\_function
 
 Treat image as 2d function:
 
@@ -89,20 +89,18 @@ Run connected components to find star shapes, and fit a gaussian to each blob in
 may need to invert images?
 i have noticed some of the fits are inverted so we can just do img  = -img befor eprocessing if needed - COULD POTENTIALLY put this into the code? maybe ask ethan
 
-``` 
-p_lo = np.percentile(img_sub, 0.5)
-p_hi = np.percentile(img_sub, 99.5)
-print("low tail 0.5%:", p_lo, "high tail 99.5%:", p_hi)
+%p\_hi = np.percentile(img\_sub, 99.5)
+%p\_lo = np.percentile(img\_sub, 0.5)
+%print("low tail 0.5%:", p_lo, "high tail 99.5%:", p_hi)
 
 
 probably find best numbers to fit - could test with multpile and gauge accuracy - TOUGH, but might work? - might need other people to help?
 
-\url{https://en.wikipedia.org/wiki/Matched_filter}
-```
+https://en.wikipedia.org/wiki/Matched\_filter
 
 currently just like taking the mad stddev but idk????
 Median Absolute Deviation
-\url{https://en.wikipedia.org/wiki/Median_absolute_deviation}
+https://en.wikipedia.org/wiki/Median\_absolute\_deviation
 
 
 

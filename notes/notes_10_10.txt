@@ -1,0 +1,22 @@
+Input: load calibrated FITS image (astropy.io.fits).
+
+Remove saturated pixels (>50k counts).
+Estimate background & noise (photutils.Background2D).
+
+Detect stars:
+
+Use threshold = mean + k*sigma (k\approx3-5)
+
+Label sources (photutils.DAOStarFinder)
+
+Measure flux
+Perform aperture photometry on detections.
+Convert counts → instrumental mag: m = -2.5 log10(counts) + ZP
+
+Estimate SNR:
+s/\sqrt{s+n_pix(B+sigma^2_rn)}
+
+find limiting mag? - faintest star w/ snr >=5 ??
+
+output a plot/csv
+

@@ -15,10 +15,12 @@ def main():
 
 def detect_stars(image_data, blur_strength, detection_threshold=0.05):
     blurred_image = gaussian_filter(image_data, sigma=blur_strength)
+
     normalized_image = (blurred_image - np.min(blurred_image)) / (
-        np.max(blurred_image) - np.min(blurred_image)
+        np.max(image_data) - np.min(image_data)
     )
     binary_star_map = (normalized_image > detection_threshold).astype(np.uint8)
+
     total_labels, _, _, _ = cv2.connectedComponentsWithStats(
         binary_star_map, connectivity=8
     )
@@ -34,7 +36,7 @@ def load_fits_image(fn: str):
 
 def open_fits_file(fn: str):
     data = load_fits_image(fn)
-    blur = [0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2, 3, 5, 10, 50]
+    blur = [0.02, 0.05, 0.1, 0.2]
     stars = []
     images = []
     for s in blur:

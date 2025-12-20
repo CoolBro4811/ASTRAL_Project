@@ -1,0 +1,55 @@
+limiting magnitude (find?)
+nickel - reliably
+    time exposure as well?
+    - check out limiting magnitude vs time (diminishing returns)
+
+distance vs brightness - using hr to fit
+
+M_limit \approx 2.5log(D^2 \times \sqrt{t}) + M 
+D is diameter, M is factor based on telescope - noise
+
+    - linear area corresponds to 5-45k counts on ccd, beyond = overexposure and bad stuff
+    - probably alreayd over exposing before that
+    - full saturation = 65k counts (16bit camera) 2^16
+    - more color, takes longer
+
+signal - noise
+goal \frac{Signal}{Noise} = 5x (can go down to 2-3, but gets grainier)
+(think of \rho and how it compares)
+
+~40s for mag 12 on nickel telescope (TEST)
+    - depends on atmosphere
+
+!!migration in seismic (take energy from diffraction - concentrate to a point source (or similar))
+area diffraction
+bessel functions
+
+focal length of secondary determines resolution (something we must find)
+
+leakage from potential wells in the ccds (noise)
+thermal electrons from other stuff (noise) - called dark current (often by the circuits heating up)
+
+    - explore different ways to find Noise
+
+you will get vertical noise more than anything (column connected - not row)
+
+Signal - Noise ratio = taken by \sqrt{\delta t} - only works on linear section (stats, P(t) doesnt change)
+
+file sharing?
+
+explore stacks from unistellers
+monte carlo? 
+evscope - each pixel has a different filter - explore how stacking works?
+[R G 
+ G B]*n
+
+
+this vs nickel, has bayer something??? - research this (LPC Electronic telescope paper)
+IR is intensified - when looking at color data
+    - intensities should map well, but color is where it gets weird
+    - nickel for gaging distance
+
+
+
+counting stats - how count increases with lowering thresholds (lower bound), and how that relates to Signal - Noise ratios
+

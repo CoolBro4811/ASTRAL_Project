@@ -1,11 +1,5 @@
 import numpy as np
-
-try:
-    from scipy.optimize import curve_fit
-
-    SCIPY_AVAILABLE = True
-except Exception:
-    SCIPY_AVAILABLE = False
+from scipy.optimize import curve_fit
 
 
 def twoD_gaussian(coords, amp, x0, y0, sigma_x, sigma_y, theta, offset):
@@ -29,11 +23,9 @@ def twoD_gaussian(coords, amp, x0, y0, sigma_x, sigma_y, theta, offset):
 
 def fit_gaussian_around(image, yc, xc, radius=6):
     """
-    Fit 2D Gaussian to sub-image centered near (yc, xc).
-    Returns dict with keys 'amp','x','y','sx','sy','theta','offset' or None if unavailable/failed.
+    fit 2D Gaussian to sub-image centered near (yc, xc).
+    ret dict with keys 'amp','x','y','sx','sy','theta','offset' or None if bad
     """
-    if not SCIPY_AVAILABLE:
-        return None
     H, W = image.shape
     y0 = int(np.clip(np.round(yc) - radius, 0, H - 1))
     y1 = int(np.clip(np.round(yc) + radius + 1, 0, H))

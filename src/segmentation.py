@@ -3,8 +3,8 @@ import numpy as np
 
 def label_connected_components(mask):
     """
-    Label connected components in boolean mask using 8-connectivity.
-    Returns list of (ys, xs) arrays for each component.
+    connected components in boolean mask using 8-con.
+    ret: list of (ys, xs) arrays for each component.
     """
     H, W = mask.shape
     visited = np.zeros_like(mask, dtype=bool)
@@ -46,9 +46,9 @@ def label_connected_components(mask):
 
 def compute_centroid_and_flux(image, ys, xs, subtract_local_bg=False):
     """
-    Compute intensity-weighted centroid and total flux.
-    If subtract_local_bg True, estimate local background using area around component.
-    Returns (x_centroid, y_centroid, flux, peak_value).
+    compute centroid and total flux.
+    if subtract_local_bg True, estimate local background using area around component.
+    returns (x_centroid, y_centroid, flux, peak_value).
     """
     vals = image[ys, xs].astype(float)
     if subtract_local_bg:

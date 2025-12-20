@@ -5,8 +5,8 @@ from .utils import fft_convolve, make_gaussian_kernel
 
 def blockwise_median_background(image, block_size=64):
     """
-    Estimate background by medians on non-overlapping blocks and smooth.
-    Returns background image same shape as input.
+    background by medians on non-overlapping blocks and smooth
+    returns background image same shape as input.
     """
     H, W = image.shape
     bh = int(np.ceil(H / block_size))

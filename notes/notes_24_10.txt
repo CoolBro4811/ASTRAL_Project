@@ -1,0 +1,14 @@
+astrometry
+- find dimmest stars
+- magnitude of those using ^
+
+deconvolution to find points of stars
+- assuming some certain shape, gaussian
+- daostarfinder has params to handle the shape, we can choose these
+- choose smaller stars to have as a reference point - as its likely what the atmosphere is causing the changes in
+
+files:
+www.clifford.org/drbill/clpc
+
+info about fits files + viewer + markup
+js9.si.edu

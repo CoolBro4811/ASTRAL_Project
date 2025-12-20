@@ -28,9 +28,14 @@ def detect_stars(
     Returns (detections_list, aux_dict)
     """
     img = np.array(image, dtype=float)
-    if invert:
+    p_hi = np.percentile(img, 99.5)
+    p_lo = np.percentile(img, 0.5)
+    print(p_hi, p_lo)
+
+    if invert or p_hi > p_lo:
         img = -img
     bg = blockwise_median_background(img, block_size=bg_block)
+
     img_sub = img - bg
     med = np.median(img_sub)
     sigma = mad_std(img_sub)

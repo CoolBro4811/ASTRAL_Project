@@ -13,7 +13,7 @@ def plot_detections(
     vmax=None,
 ):
     """
-    Plot image with circles around detections.
+    plot image with circles around detections.
 
     radius_mode:
       - "fixed": use circle_radius for every detection.
