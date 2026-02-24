@@ -14,13 +14,16 @@ def main(fn: str):
 
     dark = fits.open(fn + "dark").data[0].astype(float64)
 
+    # subtract bias frame and dark frame
+    # assumed to be master bias and master dark, this may be handled later
     data -= bias + dark
 
     flat = fits.open(fn + "flat").data[0].astype(float64)
 
-    m = stats.mode(flat)
+    m = stats.mode(flat).mode
+    flat /= m
 
-    data /= m
+    data /= flat
 
     data.writeto(fn + "analyzed")
 

@@ -84,3 +84,5 @@ combining multiple images in a evscope, etc, SNR increases with sqrt(counts), wh
 SNR should be like at some certain cutoff - but this is complicated
     - snr above sky is like 5\sigma is pretty good
     - + also figure out what contribution are the flats, darks, and biases
+
+
