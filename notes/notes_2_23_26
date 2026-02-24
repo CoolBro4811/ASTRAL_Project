@@ -1,0 +1,86 @@
+dr. kevin mclin
+
+ccd imaging
+float[][] input -> read row wise
+- each element of input "collects" photons
+- 0 0 0 0 -> 0
+- 1 1 1 0 -> 0
+- 0 0 0 1 -> 1
+             ^  collect this column
+shifting of rows and buckets doesnt always preserve information correctly
+(read noise)
+
+CCD imagers are linear (up to a limit - around 30,300 in the example)
+(no reciprocity failure up to a cutoff, much higher than film)
+- if the bucket gets filled, then its harder to put more photons into a single imager (we dont want to saturate or even come close to saturating each bucket)
+
+CCD wavelength dependence
+- peak is in red and IR, but can be adjusted somewhat
+- falls off very fast away from red/IR 
+- ex. B filter has alot less saturation bc less is absorbed, while R and near IR are alot more sensitive
+
+Calibration
+
+- odd numbers are used because of how the sorting/selection of medians work
+
+- Bias frames -> artificial zero level (shutter closed), artificial zero point for the camera
+    - noise made here is the read noise
+    - usually doesnt vary with time 
+
+    - take ~30, many is easy to take
+
+- Dark frames -> remove dark counts (thermal e- vs photon e-), usually linear with time 
+    - can be reduced with cooling (duh)
+    - dewars of liquid N2 used for older ccds 
+    - modern ccds have electric coolers, where it can be almost entirely mitigated
+    - must be equal in exposure times, but this can be scaled if needed (divide by a factor that makes the dark exposure equal to the data exposure time)
+    - longer darks help to improve characterization of the dark noise 
+    - 20 sec dark + 10 sec data, cut dark frame in half and then subtract
+
+    - at LEAST 11 for each exposure time you expect to use for your program OR take longer than expected, and then scale down as needed 
+
+- Flat frames -> remove pixel-to-pixel variations (unequal illumination, mirrors, lenses, dust, different pixels are more sensitive)
+    - subtract flats from actual data 
+    - use mode of the image, (most likely value), divide all of the chip by that value
+    - use multiple flats to obtain a master flats
+    - time taken doesnt matter, all that matters is the # of counts per pixel (must be large)
+
+    - take different flats with different filters
+
+    - possible to take dome flats using full spectrum lamps, however the illumination pattern of the dome is different than the sky (thats why the twilight flats are "better", though it doesnt really matter usually)
+        - cloud flats are big no no
+
+    - twilight flats are best
+    - take 11 in each filter you expect to use, each image should have [30k-50k] ADU per pixel
+
+
+ANALYSIS pipeline 
+- subtract bias 
+- subtract dark with scaled exposure time
+- divide all images by the master flat 
+
+
+COUNTS 
+- values in a CCD are read out as ADUs, or analog to digital units
+- related to the # of electrons, but not the same 
+    - related for each camera by the "gain" value (multiple by the gain for each read out value)
+- important for measuring uncertainties to convert back to electon counts (voltage)
+
+Point-Spread functions
+- a gaussian distribution in x,y
+
+
+
+
+
+
+
+****
+de-bayer if taken from a camera that takes color with grids of pixels (usually shouldnt matter if not taking super high resolution)
+
+combining multiple images in a evscope, etc, SNR increases with sqrt(counts), which increases with time 
+    - diminishing returns, however, as it is sqrt 
+
+SNR should be like at some certain cutoff - but this is complicated
+    - snr above sky is like 5\sigma is pretty good
+    - + also figure out what contribution are the flats, darks, and biases
