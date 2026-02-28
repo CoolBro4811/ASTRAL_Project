@@ -7,7 +7,6 @@ from astropy.io import fits
 from astropy.stats import mad_std
 from photutils.detection import DAOStarFinder
 from sklearn.model_selection import train_test_split
-from tensorflow.keras import layers, models
 import matplotlib.pyplot as plt
 
 

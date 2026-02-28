@@ -1,31 +1,52 @@
 from astropy.io import fits
+import os
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import numpy as np
 import sys
 from scipy import stats
 
+"""
+    files assumed to be in:
 
-def main(fn: str):
-    if os.path.exists(fn + "analyzed"):
-        return
+    data: fn
+    master bias: fn+"bias"
+    master dark: fn+"dark"
+    master flat: fn+"flat"
+"""
 
-    data = fits.open(fn).data[0].astype(float64)
 
-    bias = fits.open(fn + "bias").data[0].astype(float64)
+def visualize(data):
+    fig, ax = plt.subplots()
+    ax.imshow(data)
+    plt.show()
 
-    dark = fits.open(fn + "dark").data[0].astype(float64)
+
+def main(fn: str) -> None:
+    # if os.path.exists(fn + "analyzed"):
+    #     return
+
+    data = fits.getdata(fn).astype(np.float64)
+    visualize(-data)
+    if os.path.exists(fn + "bias"):
+        bias = fits.getdata(fn + "bias").astype(np.float64)
+        data -= bias
+
+    if os.path.exists(fn + "dark"):
+        dark = fits.getdata(fn + "dark").astype(np.float64)
+        data -= dark
 
     # subtract bias frame and dark frame
     # assumed to be master bias and master dark, this may be handled later
-    data -= bias + dark
 
-    flat = fits.open(fn + "flat").data[0].astype(float64)
+    if os.path.exists(fn + "flat"):
+        flat = fits.getdata(fn + "flat").astype(np.float64)
+        m = stats.mode(flat).mode
+        flat /= m
 
-    m = stats.mode(flat).mode
-    flat /= m
-
-    data /= flat
-
-    data.writeto(fn + "analyzed")
+        data /= flat
+    visualize(data)
+    fits.writeto(fn + "analyzed", data)
 
 
 if __name__ == "__main__":
