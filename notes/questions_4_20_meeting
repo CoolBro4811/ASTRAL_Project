@@ -1,0 +1,8 @@
+F = F_0 * 10^{-m/2.5}
+used
+
+what are the expected scales for a V-band observation?
+- typical photon flux at detector for 0th mag star 
+- reasonable photon rate per pixel after accounting for psf 
+- typical background levels (sky + read noise) in electrons per pixel per second
+

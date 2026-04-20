@@ -2,6 +2,7 @@ from astropy.io import fits
 import os
 import sys
 from scipy.signal import fftconvolve
+from scipy.ndimage import maximum_filter
 import numpy as np
 
 FWHM = 1.0
@@ -22,7 +23,7 @@ Stars are approximately point sources convolved with telescope PSF:
     - PSF(x,y) = point spread function at (x,y)
 
 A gaussian is approximately a PSF (kinda), so we can model it as such
-- PSF(x,y) ~ exp(\frac{x^2 + y^2}{2 * \sigma^2})
+- PSF(x,y) ~ exp(frac{x^2 + y^2}{2 * sigma^2})
 
 
 
@@ -68,15 +69,41 @@ def matched_filter(image, kernel):
     return fftconvolve(image, kernel, mode="same")
 
 
-def mad_std(image):
-    """
-    mean absolute deviation to find noise level
-
-    @return : float
-        estimated noise stdev
-    """
-
-    med = np.median(image)
-    mad = np.median(np.abs(image - med))
-
-    return mad
+#
+#
+# def mad_std(image):
+#     """
+#     mean absolute deviation to find noise level
+#
+#     @return : float
+#         estimated noise stdev
+#     """
+#
+#     med = np.median(image)
+#     mad = np.median(np.abs(image - med))
+#
+#     return mad
+#
+#
+# def snr_map(filtered, sigma):
+#     """
+#     convert matched filtered image to SNR map
+#     """
+#     return filtered / sigma
+#
+#
+# def detect_cand(snr, threshold=5):
+#     """
+#     return bool mask of cand star pixels
+#     """
+#     return snr > threshold
+#
+# def find_local_max(image, size=5):
+#     """
+#     detect local max in image
+#     """
+#     neighborhood = maximum_filter(image, size=size)
+#     return image == neighborhood
+#
+def detect_stars(snr, threhold=5):
+    noise = mad_std(f)
