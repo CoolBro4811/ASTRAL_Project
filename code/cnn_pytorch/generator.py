@@ -14,9 +14,9 @@ class StarTrainingGenerator:
         psf_sigma=1.5,
         background=10,
         star_flux=1000,
-        read_noise=2,
+        read_noise=2.0,
         seed=None,
-        target_sigma=1.0,
+        target_sigma=2.0,
     ):
         """
         target_sigma: sigma (pixels) for the Gaussian blob in the heatmap target.
@@ -29,6 +29,9 @@ class StarTrainingGenerator:
         self.target_sigma = target_sigma
         self.rng = np.random.default_rng(seed)
 
+        # avoids recomputing per star
+        self.Y, self.X = np.mgrid[0 : self.size, 0 : self.size]
+
     def gaussian_psf(self, x, y, cx, cy):
         dx = x - cx
         dy = y - cy
@@ -36,47 +39,54 @@ class StarTrainingGenerator:
 
     def add_star(self, img, cx, cy, mag):
         flux = self.star_flux * 10 ** (-mag / 2.5)
-        hw = int(5 * self.sigma)
-        x0, y0 = int(round(cx)), int(round(cy))
-        for dx in range(-hw, hw + 1):
-            x = x0 + dx
-            if x < 0 or x >= self.size:
-                continue
-            for dy in range(-hw, hw + 1):
-                y = y0 + dy
-                if y < 0 or y >= self.size:
-                    continue
-                psf = self.gaussian_psf(x + 0.5, y + 0.5, cx, cy)
-                img[y, x] += flux * psf
+
+        # vectorized PSF
+        psf = np.exp(
+            -((self.X - cx) ** 2 + (self.Y - cy) ** 2) / (2 * self.sigma**2)
+        )
+
+        img += flux * psf
 
     def make_heatmap_target(self, labels):
-        """Create a heatmap (Gaussian blobs) and a magnitude map from star labels"""
         heatmap = np.zeros((self.size, self.size), dtype=np.float32)
         magmap = np.zeros((self.size, self.size), dtype=np.float32)
+
+        # accumulate weights separately for stable normalization
+        mag_weight_sum = np.zeros_like(magmap)
+
         for star in labels:
             cx, cy, mag = star["x"], star["y"], star["mag"]
 
-            y, x = np.ogrid[: self.size, : self.size]
+            # reuse precomputed grid instead of np.ogrid each loop
             g = np.exp(
-                -((x - cx) ** 2 + (y - cy) ** 2) / (2 * self.target_sigma**2)
+                -((self.X - cx) ** 2 + (self.Y - cy) ** 2)
+                / (2 * self.target_sigma**2)
             )
-            # normalize
-            g = g / np.max(g)
+
+            g = g / np.max(g)  # peak = 1
+
             heatmap = np.maximum(heatmap, g)
-            # set magnitude at the peak position
-            ix, iy = int(round(cx)), int(round(cy))
-            if 0 <= ix < self.size and 0 <= iy < self.size:
-                magmap[iy, ix] = mag  # magnitude at exact center
+
+            # accumulate magnitude in a weighted way (better learning signal)
+            magmap += g * mag
+            mag_weight_sum += g
+
+        # normalize AFTER loop (fixes bad per-iteration division)
+        mask = mag_weight_sum > 1e-6
+        magmap[mask] /= mag_weight_sum[mask]
+
         return heatmap, magmap
 
     def generate(self, num_stars, mag_range=(5, 12), margin=10):
         """gen image, labels, heatmap target, and magnitude target"""
         img = np.full((self.size, self.size), self.background, dtype=np.float32)
         labels = []
+
         for _ in range(num_stars):
             cx = self.rng.uniform(margin, self.size - margin)
             cy = self.rng.uniform(margin, self.size - margin)
             mag = self.rng.uniform(mag_range[0], mag_range[1])
+
             self.add_star(img, cx, cy, mag)
             labels.append({"x": cx, "y": cy, "mag": mag})
 
@@ -86,6 +96,7 @@ class StarTrainingGenerator:
         img = np.clip(img, 0, None)
 
         heatmap, magmap = self.make_heatmap_target(labels)
+
         return img, labels, heatmap, magmap
 
     def save_fits(self, image, labels, filepath):

@@ -1,9 +1,10 @@
-from astropy.io import fits
 import os
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import numpy as np
 import sys
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
+from astropy.io import fits
 from scipy import stats
 
 """
